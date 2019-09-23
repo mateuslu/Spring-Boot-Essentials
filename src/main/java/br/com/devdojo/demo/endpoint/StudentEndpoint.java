@@ -7,8 +7,10 @@ import br.com.devdojo.demo.repository.StudentyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -36,9 +38,9 @@ public class StudentEndpoint {
         return new ResponseEntity<>(studentDao.findByNameBefore(name),HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody Student student) {
-        studentDao.save(student);
-        return new ResponseEntity<>(student, HttpStatus.OK);
+    @Transactional
+    public ResponseEntity<?> save(@Valid @RequestBody Student student) {
+        return new ResponseEntity<>(studentDao.save(student), HttpStatus.CREATED);
     }
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
